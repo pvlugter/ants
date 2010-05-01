@@ -1,8 +1,9 @@
 Ants
 ====
 
-Ants is based on the Clojure ants simulation by Rich Hickey, and ported to Scala using [Akka][akka] and [Spde][spde].
+Ants is based on the Clojure [ants simulation][ants.clj] by Rich Hickey, and ported to Scala using [Akka][akka] and [Spde][spde].
 
+[ants.clj]:http://clojure.googlegroups.com/web/ants.clj
 [akka]:http://akkasource.org
 [spde]:http://technically.us/spde/
 
@@ -25,7 +26,7 @@ Ants also requires the latest Akka. To build a local version of Akka Core:
 Running
 -------
 
-First time, sbt update to get dependencies.
+First time, sbt update to get dependencies:
 
     sbt update
 
@@ -37,7 +38,7 @@ To run Ants use sbt run:
 Self-contained jar
 ------------------
 
-If you don't want to build from source see the Downloads section for a self-contained jar which contains all the dependencies. Simply run this jar with:
+Rather than building from source there is also a self-contained jar in the Downloads section. Run with:
 
     java -jar ants-assembly-0.1.jar
 
