@@ -127,7 +127,7 @@ object Util {
     (dimBound(x + dx), dimBound(y + dy))
   }
 
-  def rankBy[A, B: Ordering](xs: Seq[A], f: A => B) = Map(xs.sortBy(f).zip(Stream from 1): _*)
+  def rankBy[A, B: Ordering](xs: Seq[A], f: A => B) = xs.sortBy(f).zip(Stream from 1).toMap
 
   def roulette(slices: Seq[Int]) = {
     val total = slices.sum
