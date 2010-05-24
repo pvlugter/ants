@@ -3,7 +3,8 @@ package ants
 import java.util.concurrent.TimeUnit
 import scala.util.Random.{nextInt => randomInt}
 import se.scalablesolutions.akka
-import akka.actor.{Transactor, Scheduler}
+import akka.actor.Actor.actorOf
+import akka.actor.{ActorRef, Transactor, Scheduler}
 import akka.stm.{Vector => _, _}
 import akka.stm.Ref.Ref
 import akka.stm.Transaction.Local._
@@ -93,17 +94,22 @@ object World {
     for (x <- homeRange; y <- homeRange) yield {
       place(x, y).makeHome
       place(x, y) enter Ant(randomInt(8))
-      new AntActor(x, y)
+      actorOf(new AntActor(x, y))
     }
   }
 
   lazy val ants = setup
   
-  lazy val evaporator = new Evaporator
+  lazy val evaporator = actorOf(new Evaporator)
+
+  private def pingEvery(millis: Long)(actor: ActorRef) = {    
+    actor.start
+    Scheduler.schedule(actor, Ping, Config.StartDelay, millis, TimeUnit.MILLISECONDS)
+  }
 
   def start = {
-    ants foreach (_ pingEvery AntMillis)
-    evaporator pingEvery EvapMillis
+    ants foreach pingEvery(AntMillis)
+    pingEvery(EvapMillis)(evaporator)
   }
 }
 
@@ -140,15 +146,12 @@ object Util {
   }
 }
 
+case object Ping
+
 trait WorldActor extends Transactor {
   def act
 
-  def receive = { case "ping" => act }
-
-  def pingEvery(millis: Long) = {    
-    start
-    Scheduler.schedule(this, "ping", Config.StartDelay, millis, TimeUnit.MILLISECONDS)
-  }
+  def receive = { case Ping => act }
 }
 
 class AntActor(initLoc: (Int, Int)) extends WorldActor {

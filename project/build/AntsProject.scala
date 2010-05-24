@@ -10,6 +10,8 @@ class AntsProject(info: ProjectInfo) extends DefaultSpdeProject(info) with Assem
   val javaNet = "Java.Net" at "http://download.java.net/maven/2"
   val scalaToolsSnapshots = ScalaToolsSnapshots
   
+  val configgy = "net.lag" % "configgy" % "2.8.0.RC2-1.5.2-SNAPSHOT" from ("http://github.com/jboner/akka/blob/master/embedded-repo/net/lag/configgy/2.8.0.RC2-1.5.2-SNAPSHOT/configgy-2.8.0.RC2-1.5.2-SNAPSHOT.jar")
+
   val akkaCore = "se.scalablesolutions.akka" %% "akka-core" % "0.9"
 
   override def spdeSourcePath = mainSourcePath / "spde"
