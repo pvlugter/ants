@@ -20,6 +20,9 @@ Ants also requires the latest Akka. To build a local version of Akka Core:
 
     git clone http://github.com/jboner/akka.git
     cd akka
+    cd akka-sbt-plugin
+    sbt publish-local
+    cd ..
     sbt "project akka-core" update publish-local
 
 
@@ -40,7 +43,7 @@ Self-contained jar
 
 Rather than building from source there is also a self-contained jar in the Downloads section. Run with:
 
-    java -jar ants-assembly-0.1.jar
+    java -jar ants-assembly-0.2.jar
 
 
 Notice
