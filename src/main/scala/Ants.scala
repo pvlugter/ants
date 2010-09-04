@@ -1,8 +1,4 @@
-/**
- * Copyright (C) 2009-2010 Scalable Solutions AB <http://scalablesolutions.se>
- */
-
-package sample.ants
+package ants
 
 import java.util.concurrent.TimeUnit
 import scala.util.Random.{nextInt => randomInt}
@@ -13,7 +9,7 @@ import akka.stm.local._
 
 object Config {
   val Dim = 80               // dimensions of square world
-  val AntsSqrt = 20          // number of ants = AntsSqrt^2
+  val AntsSqrt = 10          // number of ants = AntsSqrt^2
   val FoodPlaces = 35        // number of places with food
   val FoodRange = 100        // range of amount of food at a place
   val PherScale = 10         // scale factor for pheromone drawing
@@ -40,7 +36,7 @@ case class Cell(food: Int = 0, pher: Float = 0, ant: Option[Ant] = None, home: B
 
 object EmptyCell extends Cell
 
-class Place(initCell: Cell = EmptyCell) extends Ref(Some(initCell)) {
+class Place(initCell: Cell = EmptyCell) extends Ref(initCell) {
   def cell: Cell = getOrElse(EmptyCell)
   def food: Int = cell.food
   def food(i: Int) = alter(_.addFood(i))
@@ -64,17 +60,17 @@ object World {
   import Config._
 
   val homeOff = Dim / 4
-  lazy val places = Vector.fill(Dim, Dim)(new Place)
-  lazy val ants = setup
-  lazy val evaporator = actorOf[Evaporator].start
+  val places = Array.fill(Dim, Dim)(new Place)
+  val ants = setup
+  val evaporator = actorOf[Evaporator].start
 
-  private val snapshotFactory = TransactionFactory(readonly = true, familyName = "snapshot", hooks = false)
+  val snapshotFactory = TransactionFactory(readonly = true, familyName = "snapshot")
 
-  def snapshot = atomic(snapshotFactory) { Array.tabulate(Dim, Dim)(place(_, _).get) }
+  def snapshot = atomic(snapshotFactory) { Array.tabulate(Dim, Dim)(place(_, _).opt) }
 
   def place(loc: (Int, Int)) = places(loc._1)(loc._2)
 
-  private def setup = atomic {
+  def setup = atomic {
     for (i <- 1 to FoodPlaces) {
       place(randomInt(Dim), randomInt(Dim)) food (randomInt(FoodRange))
     }
@@ -91,7 +87,7 @@ object World {
     pingEvery(EvapMillis)(evaporator)
   }
 
-  private def pingEvery(millis: Long)(actor: ActorRef) =
+  def pingEvery(millis: Long)(actor: ActorRef) =
     Scheduler.schedule(actor, Ping, Config.StartDelay, millis, TimeUnit.MILLISECONDS)
 }
 
@@ -108,12 +104,14 @@ object Util {
 
   val dirDelta = Map(0 -> (0, -1), 1 -> (1, -1), 2 -> (1, 0), 3 -> (1, 1),
                      4 -> (0, 1), 5 -> (-1, 1), 6 -> (-1, 0), 7 -> (-1, -1))
+
   def deltaLoc(x: Int, y: Int, dir: Int) = {
     val (dx, dy) = dirDelta(dirBound(dir))
     (dimBound(x + dx), dimBound(y + dy))
   }
 
-  def rankBy[A, B: Ordering](xs: Seq[A], f: A => B) = Map(xs.sortBy(f).zip(Stream from 1): _*)
+  def rankBy[A, B: Ordering](xs: Seq[A], f: A => B) =
+    xs.sortBy(f).zip(Stream from 1).toMap
 
   def roulette(slices: Seq[Int]) = {
     val total = slices.sum
@@ -139,7 +137,7 @@ class AntActor(initLoc: (Int, Int)) extends WorldActor {
   val locRef = Ref(initLoc)
 
   val name = "ant-from-" + initLoc._1 + "-" + initLoc._2
-  implicit val txFactory = TransactionFactory(familyName = name, hooks = false)
+  implicit val txFactory = TransactionFactory(familyName = name)
 
   val homing = (p: Place) => p.pher + (100 * (if (p.home) 0 else 1))
   val foraging = (p: Place) => p.pher + p.food
@@ -211,7 +209,7 @@ class Evaporator extends WorldActor {
   import Config._
   import World._
 
-  implicit val txFactory = TransactionFactory(familyName = "evaporator", hooks = false)
+  implicit val txFactory = TransactionFactory(familyName = "evaporator")
   val evaporate = (pher: Float) => pher * EvapRate
 
   def act = for (x <- 0 until Dim; y <- 0 until Dim) {

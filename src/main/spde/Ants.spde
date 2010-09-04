@@ -1,6 +1,5 @@
-import sample.ants._
-import sample.ants.Config._
-import se.scalablesolutions.akka.stm.local._
+import ants._
+import ants.Config._
 
 val scale = 5
 

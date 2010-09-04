@@ -6,7 +6,7 @@ class AntsProject(info: ProjectInfo) extends DefaultSpdeProject(info) with AkkaP
 }
 
 trait AssemblyProject extends BasicScalaProject {
-  def assemblyExclude(base: PathFinder) = base / "META-INF" ** "*"
+  def assemblyExclude(base: PathFinder) = (base / "META-INF" ** "*") +++ (base / "logback.xml")
   def assemblyOutputPath = outputPath / assemblyJarName
   def assemblyJarName = artifactID + "-assembly-" + version + ".jar"
   def assemblyTemporaryPath = outputPath / "assemblage"

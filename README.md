@@ -16,14 +16,16 @@ To build and run Ants you need [Simple Build Tool][sbt] (sbt).
 [sbt]: http://code.google.com/p/simple-build-tool/
 
 
-Ants also requires the latest Akka. To build a local version of Akka Core:
+Ants also requires the latest Akka. To build a local version of Akka (actor module):
 
     git clone http://github.com/jboner/akka.git
     cd akka
+    sbt "project akka-actor" update publish-local
+
+Also install the akka-sbt-plugin locally:
+
     cd akka-sbt-plugin
     sbt publish-local
-    cd ..
-    sbt "project akka-core" update publish-local
 
 
 Running
