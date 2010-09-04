@@ -40,14 +40,6 @@ To run Ants use sbt run:
     sbt run
 
 
-Self-contained jar
-------------------
-
-Rather than building from source there is also a self-contained jar in the Downloads section. Run with:
-
-    java -jar ants-assembly-0.2.jar
-
-
 Notice
 ------
 
