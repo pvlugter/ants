@@ -1,11 +1,15 @@
 Ants
 ====
 
-Ants is based on the Clojure [ants simulation][ants.clj] by Rich Hickey, and ported to Scala using [Akka][akka] and [Spde][spde].
+Ants is based on the Clojure [ants simulation][ants.clj] by Rich
+Hickey, and ported to Scala using [Akka][akka] and [Spde][spde].
 
-[ants.clj]:http://clojure.googlegroups.com/web/ants.clj
-[akka]:http://akkasource.org
-[spde]:http://technically.us/spde/
+Ants can also be found as a [sample in Akka][sample].
+
+[ants.clj]: http://clojure.googlegroups.com/web/ants.clj
+[akka]: http://akkasource.org
+[spde]: http://technically.us/spde/
+[sample]: http://github.com/jboner/akka/tree/master/akka-samples/akka-sample-ants/
 
 
 Requirements
