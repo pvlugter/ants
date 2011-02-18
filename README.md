@@ -20,18 +20,6 @@ To build and run Ants you need [Simple Build Tool][sbt] (sbt).
 [sbt]: http://code.google.com/p/simple-build-tool/
 
 
-Ants also requires the latest Akka. To build a local version of Akka (actor module):
-
-    git clone http://github.com/jboner/akka.git
-    cd akka
-    sbt "project akka-actor" update publish-local
-
-Also install the akka-sbt-plugin locally:
-
-    cd akka-sbt-plugin
-    sbt publish-local
-
-
 Running
 -------
 
@@ -44,8 +32,8 @@ To run Ants use sbt run:
     sbt run
 
 
-Notice
-------
+Original Notice
+---------------
 
 Ants is based on the Clojure ants simulation by Rich Hickey.
 

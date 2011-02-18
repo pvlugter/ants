@@ -2,6 +2,7 @@ import sbt._
 import spde._
 
 class AntsProject(info: ProjectInfo) extends DefaultSpdeProject(info) with AkkaProject with AssemblyProject {
+  val akkaStm = akkaModule("stm")
   override def spdeSourcePath = mainSourcePath / "spde"
 }
 
